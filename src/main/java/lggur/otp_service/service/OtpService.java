@@ -4,6 +4,8 @@ import lggur.otp_service.dao.OtpCodeDao;
 import lggur.otp_service.dao.OtpConfigDao;
 import lggur.otp_service.model.OtpCode;
 import lggur.otp_service.model.OtpConfig;
+import lggur.otp_service.service.notification.NotificationFactory;
+import lggur.otp_service.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -13,15 +15,17 @@ import java.time.OffsetDateTime;
 public class OtpService {
     private final OtpConfigDao configDao;
     private final OtpCodeDao codeDao;
+    private final NotificationFactory notificationFactory;
 
     private final SecureRandom random = new SecureRandom();
 
-    public OtpService(OtpConfigDao configDao, OtpCodeDao codeDao) {
+    public OtpService(OtpConfigDao configDao, OtpCodeDao codeDao, NotificationFactory notificationFactory) {
         this.configDao = configDao;
         this.codeDao = codeDao;
+        this.notificationFactory = notificationFactory;
     }
 
-    public OtpCode generate(Long userId, String operationId) {
+    public OtpCode generate(Long userId, String operationId, String channel, String destination) {
 
         OtpConfig config = configDao.getConfig();
 
@@ -37,17 +41,23 @@ public class OtpService {
         otp.setOperationId(operationId);
         otp.setExpiresAt(expiresAt);
 
+        codeDao.save(otp);
+
+        NotificationService notificationService = notificationFactory.get(channel);
+
+        notificationService.send(destination, "Your OTP code: " + code);
+
         return codeDao.save(otp);
     }
 
     private String generateCode(int length) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
-            sb.append(random.nextInt(10));
+            stringBuilder.append(random.nextInt(10));
         }
 
-        return sb.toString();
+        return stringBuilder.toString();
     }
 
 }

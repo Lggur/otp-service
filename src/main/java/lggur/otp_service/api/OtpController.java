@@ -19,8 +19,10 @@ public class OtpController {
     @PostMapping("/generate")
     public OtpCode generate(
             @RequestParam Long userId,
-            @RequestParam(required = false) String operationId
+            @RequestParam(required = false) String operationId,
+            @RequestParam String channel,
+            @RequestParam String destination
     ) {
-        return otpService.generate(userId, operationId);
+        return otpService.generate(userId, operationId, channel, destination);
     }
 }
