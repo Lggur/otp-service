@@ -25,4 +25,15 @@ public class OtpController {
     ) {
         return otpService.generate(userId, operationId, channel, destination);
     }
+
+    @PostMapping("/validate")
+    public String validate(
+            @RequestParam Long userId,
+            @RequestParam String code,
+            @RequestParam(required = false) String operationId
+    ) {
+        boolean ok = otpService.validate(userId, code, operationId);
+
+        return ok ? "VALID" : "INVALID";
+    }
 }
