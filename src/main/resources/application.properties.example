@@ -1,0 +1,24 @@
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/otp_service
+spring.datasource.username=postgres
+spring.datasource.password=your_password
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# SQL Initialization
+spring.sql.init.mode=never
+spring.sql.init.schema-locations=classpath:db/schema.sql
+
+# Mail Configuration (Example: Mailtrap)
+spring.mail.host=sandbox.smtp.mailtrap.io
+spring.mail.port=587
+spring.mail.username=your_mailtrap_username
+spring.mail.password=your_mailtrap_password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# Security Configuration
+# Generate a secure key (at least 32 characters for HS256)
+jwt.secret=your_super_secret_jwt_key_here
+
+# Telegram Bot Configuration
+telegram.bot.token=your_telegram_bot_token_here

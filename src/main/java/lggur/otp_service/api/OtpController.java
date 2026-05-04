@@ -1,7 +1,6 @@
 package lggur.otp_service.api;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lggur.otp_service.model.OtpCode;
 import lggur.otp_service.service.OtpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +26,10 @@ public class OtpController {
             HttpServletRequest request,
             @RequestParam(required = false) String operationId,
             @RequestParam String channel,
-            @RequestParam String destination
-    ) {
+            @RequestParam String destination) {
         Long userId = (Long) request.getAttribute("userId");
-        log.info("OTP generate request: userId={}, channel={}, destination={}, operationId={}", userId, channel, destination, operationId);
+        log.info("OTP generate request: userId={}, channel={}, destination={}, operationId={}", userId, channel,
+                destination, operationId);
 
         otpService.generate(userId, operationId, channel, destination);
 
@@ -42,8 +41,7 @@ public class OtpController {
     public String validate(
             HttpServletRequest request,
             @RequestParam String code,
-            @RequestParam(required = false) String operationId
-    ) {
+            @RequestParam(required = false) String operationId) {
         Long userId = (Long) request.getAttribute("userId");
         log.info("OTP validate request: userId={}, operationId={}", userId, operationId);
 
