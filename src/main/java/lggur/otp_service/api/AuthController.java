@@ -30,8 +30,8 @@ public class AuthController {
             @RequestParam String username,
             @RequestParam String password
     ) {
-        boolean ok = authService.login(username, password);
-
-        return ok ? "OK" : "FAIL";
+        return authService.login(username, password);
     }
+
+
 }

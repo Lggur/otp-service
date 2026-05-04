@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserDao userDao;
+    private final JwtService jwtService;
 
-    public AuthService(UserDao userDao) {
+    public AuthService(UserDao userDao, JwtService jwtService) {
         this.userDao = userDao;
+        this.jwtService = jwtService;
     }
 
     public User register(String username, String password, String role) {
@@ -30,11 +32,15 @@ public class AuthService {
         return userDao.save(user);
     }
 
-    public boolean login(String username, String password) {
+    public String login(String username, String password) {
 
         User user = userDao.findByUsername(username).orElseThrow();
 
-        return BCrypt.checkpw(password, user.getPassword());
+        if (!BCrypt.checkpw(password, user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        return jwtService.generateToken(user.getId(), user.getRole());
     }
 
 }

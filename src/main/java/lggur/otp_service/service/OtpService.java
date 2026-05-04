@@ -61,17 +61,7 @@ public class OtpService {
     }
 
     public boolean validate(Long userId, String code, String operationId) {
-        OtpCode otp = codeDao
-                .findActiveCode(userId, code, operationId)
-                .orElseThrow(() -> new RuntimeException("OTP not found"));
-
-        if (otp.getExpiresAt().isBefore(java.time.OffsetDateTime.now())) {
-            return false;
-        }
-
-        codeDao.markAsUsed(otp.getId());
-
-        return true;
+        return codeDao.validateAndMarkUsed(userId, code, operationId);
     }
 
 }

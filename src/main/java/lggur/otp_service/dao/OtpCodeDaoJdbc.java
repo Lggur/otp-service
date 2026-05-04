@@ -124,6 +124,42 @@ public class OtpCodeDaoJdbc implements OtpCodeDao {
         }
     }
 
+    @Override
+    public boolean validateAndMarkUsed(Long userId, String code, String operationId) {
+        String sql = """
+                UPDATE otp_codes
+                SET status = 'USED',
+                    used_at = NOW()
+                WHERE id = (
+                    SELECT id FROM otp_codes
+                    WHERE user_id = ?
+                      AND code = ?
+                      AND status = 'ACTIVE'
+                      AND expires_at > NOW()
+                      AND (operation_id = ? OR ? IS NULL)
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                )
+                RETURNING id
+                """;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, userId);
+            preparedStatement.setString(2, code);
+            preparedStatement.setString(3, operationId);
+            preparedStatement.setString(4, operationId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            return resultSet.next();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
 
 

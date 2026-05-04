@@ -1,5 +1,6 @@
 package lggur.otp_service.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lggur.otp_service.model.OtpCode;
 import lggur.otp_service.service.OtpService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,21 +18,27 @@ public class OtpController {
     }
 
     @PostMapping("/generate")
-    public OtpCode generate(
-            @RequestParam Long userId,
+    public String generate(
+            HttpServletRequest request,
             @RequestParam(required = false) String operationId,
             @RequestParam String channel,
             @RequestParam String destination
     ) {
-        return otpService.generate(userId, operationId, channel, destination);
+        Long userId = (Long) request.getAttribute("userId");
+
+        otpService.generate(userId, operationId, channel, destination);
+
+        return "OTP sent";
     }
 
     @PostMapping("/validate")
     public String validate(
-            @RequestParam Long userId,
+            HttpServletRequest request,
             @RequestParam String code,
             @RequestParam(required = false) String operationId
     ) {
+        Long userId = (Long) request.getAttribute("userId");
+
         boolean ok = otpService.validate(userId, code, operationId);
 
         return ok ? "VALID" : "INVALID";

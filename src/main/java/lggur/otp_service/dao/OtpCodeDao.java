@@ -12,4 +12,6 @@ public interface OtpCodeDao {
     void markAsUsed(Long id);
 
     int expireOldCodes();
+
+    boolean validateAndMarkUsed(Long userId, String code, String operationId);
 }
