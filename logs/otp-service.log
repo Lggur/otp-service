@@ -1,0 +1,8 @@
+2026-05-04 23:13:27.064 INFO  [main] l.otp_service.OtpServiceApplication - Starting OtpServiceApplication using Java 21.0.9 with PID 26892 (D:\Projects\Java\otp-service\target\classes started by Lggur in D:\Projects\Java\otp-service)
+2026-05-04 23:13:27.067 DEBUG [main] l.otp_service.OtpServiceApplication - Running with Spring Boot v4.0.6, Spring v7.0.7
+2026-05-04 23:13:27.067 INFO  [main] l.otp_service.OtpServiceApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-04 23:13:28.978 INFO  [main] l.otp_service.OtpServiceApplication - Started OtpServiceApplication in 2.408 seconds (process running for 2.754)
+2026-05-04 23:13:28.987 INFO  [scheduling-1] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-04 23:13:29.139 INFO  [scheduling-1] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@616763fe
+2026-05-04 23:13:29.142 INFO  [scheduling-1] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-04 23:13:39.821 WARN  [http-nio-8080-exec-1] lggur.otp_service.config.JwtFilter - Invalid JWT for path /otp/generate: JWT expired 2657820 milliseconds ago at 2026-05-04T19:29:22.000Z. Current time: 2026-05-04T20:13:39.820Z. Allowed clock skew: 0 milliseconds.

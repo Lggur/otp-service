@@ -6,6 +6,8 @@ import lggur.otp_service.model.OtpCode;
 import lggur.otp_service.model.OtpConfig;
 import lggur.otp_service.service.notification.NotificationFactory;
 import lggur.otp_service.service.notification.NotificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -13,6 +15,9 @@ import java.time.OffsetDateTime;
 
 @Service
 public class OtpService {
+
+    private static final Logger log = LoggerFactory.getLogger(OtpService.class);
+
     private final OtpConfigDao configDao;
     private final OtpCodeDao codeDao;
     private final NotificationFactory notificationFactory;
@@ -26,8 +31,10 @@ public class OtpService {
     }
 
     public OtpCode generate(Long userId, String operationId, String channel, String destination) {
+        log.info("Generating OTP: userId={}, channel={}, operationId={}", userId, channel, operationId);
 
         OtpConfig config = configDao.getConfig();
+        log.debug("OTP config loaded: codeLength={}, ttlSeconds={}", config.getCodeLength(), config.getTtlSeconds());
 
         String code = generateCode(config.getCodeLength());
 
@@ -42,10 +49,12 @@ public class OtpService {
         otp.setExpiresAt(expiresAt);
 
         codeDao.save(otp);
+        log.debug("OTP code saved: otpId={}, expiresAt={}", otp.getId(), expiresAt);
 
         NotificationService notificationService = notificationFactory.get(channel);
 
         notificationService.send(destination, "Your OTP code: " + code);
+        log.info("OTP notification sent via {}: userId={}", channel, userId);
 
         return codeDao.save(otp);
     }
@@ -61,8 +70,10 @@ public class OtpService {
     }
 
     public boolean validate(Long userId, String code, String operationId) {
-        return codeDao.validateAndMarkUsed(userId, code, operationId);
+        log.info("Validating OTP: userId={}, operationId={}", userId, operationId);
+        boolean result = codeDao.validateAndMarkUsed(userId, code, operationId);
+        log.info("OTP validation result: userId={}, valid={}", userId, result);
+        return result;
     }
 
 }
-
